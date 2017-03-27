@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
+            usernameRef.setValue(userTextView.getText().toString());
+
             imageContainer.setDrawingCacheEnabled(true);
             imageContainer.buildDrawingCache();
             Bitmap bitmap = imageContainer.getDrawingCache();
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
             progressBar.setVisibility(View.VISIBLE);
             uploadButton.setEnabled(false);
-            usernameRef.setValue(userTextView.getText().toString());
+
 
             UploadTask uploadTask = userpicRef.putBytes(data, metadata);
             uploadTask.addOnSuccessListener(MainActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
