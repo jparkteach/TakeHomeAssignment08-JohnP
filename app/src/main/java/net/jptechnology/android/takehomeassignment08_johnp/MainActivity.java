@@ -8,11 +8,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference userRef = database.getReference("users");
+    private DatabaseReference usernameRef = database.getReference("username");
 
     private View imageContainer;
     private TextView overlayText;
@@ -33,10 +37,20 @@ public class MainActivity extends AppCompatActivity {
     private Button uploadButton;
     private TextView downloadUrl;
 
+    private TextView usernameTextView;
+    private TextView passwordTextView;
+    private CheckBox checkBox;
+    private TextView userTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        usernameTextView = (TextView) findViewById(R.id.editText);
+        passwordTextView = (TextView) findViewById(R.id.editText2);
+        checkBox = (CheckBox) findViewById(R.id.checkBox);
+        userTextView = (TextView) findViewById(R.id.text_input);
 
         imageContainer = findViewById(R.id.image_container);
         overlayText = (TextView) findViewById(R.id.overlay_text);
@@ -50,6 +64,11 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         downloadUrl = (TextView) findViewById(R.id.download_url);
         downloadUrl.setVisibility(View.INVISIBLE);
+    }
+
+    public void add(View view) {
+        userRef.push().setValue(new Username(usernameTextView.getText().toString()
+                , passwordTextView.getText().toString(), checkBox.isChecked()));
     }
 
     private class InputTextWatcher implements TextWatcher {
@@ -92,9 +111,11 @@ public class MainActivity extends AppCompatActivity {
 
             progressBar.setVisibility(View.VISIBLE);
             uploadButton.setEnabled(false);
+            usernameRef.setValue(userTextView.getText().toString());
 
             UploadTask uploadTask = userpicRef.putBytes(data, metadata);
             uploadTask.addOnSuccessListener(MainActivity.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progressBar.setVisibility(View.GONE);

@@ -8,7 +8,7 @@ public class Username {
     public Username() {
     } // Empty constructor is needed to read from Firebase
 
-    public Username(String name, int age, boolean alive) {
+    public Username(String username, String password, boolean isLegalAge) {
         this.username = username;
         this.password = password;
         this.isLegalAge = isLegalAge;
